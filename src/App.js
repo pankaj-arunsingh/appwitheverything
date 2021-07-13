@@ -31,7 +31,6 @@ function App() {
   const [renderComponent, setRenderComponent] = useState("volvo");
   const handleSelectedItem = (selectedValue) => {
     setRenderComponent(selectedValue);
-    console.log(selectedValue);
   };
   const componentToRender = (value) => {
     switch (value) {
