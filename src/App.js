@@ -1,10 +1,20 @@
-import { useState } from "react";
-import Mercedes from "./components/Mercedes";
-import Saab from "./components/Saab";
+import { useState, lazy, Suspense, useEffect } from "react";
 import SelectBox from "./components/SelectBox";
-import Volvo from "./components/Volvo";
-import BMW from "./components/BMW";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { initializeNotes } from "./reducers/noteReducer";
 
+const Volvo = lazy(() => import("./components/Volvo"));
+const Saab = lazy(() => import("./components/Saab"));
+const Mercedes = lazy(() => import("./components/Mercedes"));
+const BMW = lazy(() => import("./components/BMW"));
+const StyledDiv = styled.div`
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+`;
 const options = [
   {
     id: 1,
@@ -32,6 +42,10 @@ function App() {
   const handleSelectedItem = (selectedValue) => {
     setRenderComponent(selectedValue);
   };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(initializeNotes());
+  }, [dispatch]);
   const componentToRender = (value) => {
     switch (value) {
       case "volvo":
@@ -47,10 +61,12 @@ function App() {
     }
   };
   return (
-    <div className="App">
+    <StyledDiv>
       <SelectBox items={options} handleSelectedItem={handleSelectedItem} />
-      {componentToRender(renderComponent)}
-    </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        {componentToRender(renderComponent)}
+      </Suspense>
+    </StyledDiv>
   );
 }
 
